@@ -14,7 +14,8 @@ import {
   getExamStatus,
   getCountdownParts,
   getExamTotalMarks,
-  toBanglaNum
+  toBanglaNum,
+  type CountdownParts
 } from "@/utils/format";
 
 export interface ExamCardProps {
@@ -39,17 +40,14 @@ export const ExamCard: React.FC<ExamCardProps> = ({
   onOpenLeaderboard
 }) => {
   const status = getExamStatus(exam, activeAttempt || null);
-  const [countdown, setCountdown] = useState(() =>
-    status.status === "upcoming" && exam.startTime
-      ? getCountdownParts(exam.startTime)
-      : null
-  );
+  const [countdown, setCountdown] = useState<CountdownParts | null>(null);
 
   useEffect(() => {
     if (status.status !== "upcoming" || !exam.startTime) {
       setCountdown(null);
       return;
     }
+    setCountdown(getCountdownParts(exam.startTime));
     const id = window.setInterval(() => {
       setCountdown(getCountdownParts(exam.startTime));
     }, 1000);
