@@ -1,39 +1,85 @@
-@import url("https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Outfit:wght@500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap");
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 @import "katex/dist/katex.min.css";
 
-:root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+:root,
+.dark {
+  --canvas: #06070b;
+  --surface: #0c0f16;
+  --surface-elevated: #131824;
+  --surface-hover: #181f2e;
+  --border-hairline: rgba(255, 255, 255, 0.08);
+  --ink: #f8fafc;
+  --ink-secondary: #cbd5e1;
+  --ink-muted: #8b97ad;
+  --accent: #3b82f6;
+  color-scheme: dark;
 }
 
-.dark {
-  --background: #020617;
-  --foreground: #f8fafc;
+html {
+  background-color: var(--canvas);
+  color: var(--ink);
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: "Anek Bangla", "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--canvas);
+  background-image: radial-gradient(
+    ellipse 75% 45% at 50% -12%,
+    rgba(59, 130, 246, 0.13),
+    rgba(6, 7, 11, 0) 70%
+  );
+  background-repeat: no-repeat;
+  color: var(--ink);
+  font-family: "Plus Jakarta Sans", "Anek Bangla", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: 0.005em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
 }
 
-code, kbd, samp, pre {
-  font-family: "JetBrains Mono", monospace;
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
 }
 
-/* KaTeX custom responsive styling */
+code,
+kbd,
+samp,
+pre,
+.font-mono {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Accessible focus ring across all interactive elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Native dark selects and inputs */
+select option {
+  background-color: #0c0f16;
+  color: #f8fafc;
+}
+
+/* KaTeX responsive styling */
 .math-text-root .katex {
   color: inherit;
-  font-size: 1.04em;
-  line-height: 1.35;
+  font-size: 1.03em;
+  line-height: 1.45;
 }
 
 .math-text-root .katex-display {
   max-width: 100%;
-  margin: 0.35rem 0;
+  margin: 0.45rem 0;
   padding-bottom: 0.25rem;
   overflow: auto hidden;
 }
@@ -53,21 +99,41 @@ code, kbd, samp, pre {
   overflow: auto hidden;
 }
 
-/* Custom scrollbars */
+/* Refined Obsidian Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #06070b;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.4);
+  background: rgba(148, 163, 184, 0.22);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.7);
+  background: rgba(148, 163, 184, 0.45);
+}
+
+/* Hide horizontal scrollbar utility for filter strips */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

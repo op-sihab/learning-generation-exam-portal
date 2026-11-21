@@ -9,16 +9,11 @@ import {
   Copy,
   Upload,
   Download,
-  CheckCircle2,
-  AlertTriangle,
   Megaphone,
   Clock,
-  BookOpen,
   ArrowUp,
   ArrowDown,
   Sigma,
-  Eye,
-  FileText,
   Save,
   ImageIcon
 } from "lucide-react";
@@ -73,11 +68,9 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
     "exams" | "editor" | "system" | "backup"
   >("exams");
 
-  // Editing state
   const [editingExam, setEditingExam] = useState<Exam | null>(null);
   const [activeQIndex, setActiveQIndex] = useState(0);
 
-  // Modals state
   const [bulkImportOpen, setBulkImportOpen] = useState(false);
   const [formulaTarget, setFormulaTarget] = useState<{
     qIdx: number;
@@ -87,7 +80,6 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
   } | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
-  // Notice & Maintenance draft state
   const [noticeTitle, setNoticeTitle] = useState(notice.title);
   const [noticeMessage, setNoticeMessage] = useState(notice.message);
   const [maintEnabled, setMaintEnabled] = useState(maintenance.enabled);
@@ -248,24 +240,27 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
   const currentQ = editingExam?.questions[activeQIndex];
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
-      {/* Studio Header & Sub-Tabs */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="space-y-6">
+      {/* Studio Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2.5">
-            <Wrench className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+          <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-1">
+            কনটেন্ট ও প্রশ্ন ব্যবস্থাপনা
+          </p>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-2.5">
+            <Wrench className="w-6 h-6 text-blue-600 dark:text-blue-400 shrink-0" />
             <span>ইনস্ট্রাক্টর ও অ্যাডমিন স্টুডিও</span>
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            মডেল টেস্ট প্রণয়ন, LaTeX ফর্মুলাযুক্ত প্রশ্ন এডিটর, বাল্ক ফাইল ইমপোর্ট ও সিস্টেম নিয়ন্ত্রণ।
+            মডেল টেস্ট প্রণয়ন, LaTeX ফর্মুলা এডিটর, বাল্ক ফাইল ইমপোর্ট ও সিস্টেম নিয়ন্ত্রণ।
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2.5 shrink-0">
           <button
             type="button"
             onClick={startCreateExam}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold transition-colors shadow-xs"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap"
           >
             <Plus className="w-4 h-4" />
             <span>নতুন পরীক্ষা তৈরি</span>
@@ -273,22 +268,22 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
           <button
             type="button"
             onClick={() => setBulkImportOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 text-xs sm:text-sm font-bold transition-colors border border-indigo-200 dark:border-indigo-800"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white dark:bg-[#111827] text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#182234] text-xs sm:text-sm font-semibold transition-colors border border-slate-200 dark:border-slate-700 whitespace-nowrap"
           >
-            <Upload className="w-4 h-4" />
+            <Upload className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             <span>বাল্ক ইমপোর্ট</span>
           </button>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/80 w-fit text-xs font-bold">
+      {/* Responsive Segmented Tabs */}
+      <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 w-full sm:w-fit text-xs font-semibold overflow-x-auto no-scrollbar">
         <button
           type="button"
           onClick={() => setActiveTab("exams")}
-          className={`px-4 py-2 rounded-xl transition-all ${
+          className={`px-3.5 py-2 rounded-lg transition-colors whitespace-nowrap shrink-0 ${
             activeTab === "exams"
-              ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs"
+              ? "bg-white dark:bg-[#182234] text-blue-600 dark:text-blue-400 shadow-xs"
               : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
           }`}
         >
@@ -298,104 +293,108 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab("editor")}
-            className={`px-4 py-2 rounded-xl transition-all ${
+            className={`px-3.5 py-2 rounded-lg transition-colors whitespace-nowrap shrink-0 ${
               activeTab === "editor"
-                ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs"
+                ? "bg-white dark:bg-[#182234] text-blue-600 dark:text-blue-400 shadow-xs"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
-            এডিটর: {editingExam.name.slice(0, 15)}…
+            এডিটর: {editingExam.name.slice(0, 16)}
+            {editingExam.name.length > 16 ? "…" : ""}
           </button>
         )}
         <button
           type="button"
           onClick={() => setActiveTab("system")}
-          className={`px-4 py-2 rounded-xl transition-all ${
+          className={`px-3.5 py-2 rounded-lg transition-colors whitespace-nowrap shrink-0 ${
             activeTab === "system"
-              ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs"
+              ? "bg-white dark:bg-[#182234] text-blue-600 dark:text-blue-400 shadow-xs"
               : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
           }`}
         >
-          নোটিশ ও সিস্টেম কন্ট্রোল
+          নোটিশ ও সিস্টেম
         </button>
         <button
           type="button"
           onClick={() => setActiveTab("backup")}
-          className={`px-4 py-2 rounded-xl transition-all ${
+          className={`px-3.5 py-2 rounded-lg transition-colors whitespace-nowrap shrink-0 ${
             activeTab === "backup"
-              ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs"
+              ? "bg-white dark:bg-[#182234] text-blue-600 dark:text-blue-400 shadow-xs"
               : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
           }`}
         >
-          ব্যাকআপ ও রিস্টোর
+          ব্যাকআপ ও এক্সপোর্ট
         </button>
       </div>
 
       {/* Tab 1: Exam List */}
       {activeTab === "exams" && (
-        <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
+        <div className="rounded-2xl bg-white dark:bg-[#111827] border border-slate-200/90 dark:border-slate-800 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-slate-100 dark:border-slate-800 text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-slate-50/70 dark:bg-slate-800/40">
+                <tr className="border-b border-slate-100 dark:border-slate-800 text-[11px] font-semibold text-slate-500 dark:text-slate-400 bg-slate-50/80 dark:bg-[#182234]/70">
                   <th className="py-3.5 px-5">পরীক্ষার নাম</th>
                   <th className="py-3.5 px-4">বিষয় ও অধ্যায়</th>
-                  <th className="py-3.5 px-4 text-center">প্রশ্ন সংখ্যা</th>
-                  <th className="py-3.5 px-4 text-center">সময় / পূর্ণমান</th>
+                  <th className="py-3.5 px-4 text-right">প্রশ্ন</th>
+                  <th className="py-3.5 px-4 text-right">সময় / পূর্ণমান</th>
                   <th className="py-3.5 px-4 text-center">স্ট্যাটাস</th>
                   <th className="py-3.5 px-5 text-right">অ্যাকশন</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
                 {exams.map((ex) => (
                   <tr
                     key={ex.id}
-                    className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors"
+                    className="hover:bg-slate-50/70 dark:hover:bg-[#182234]/60 transition-colors"
                   >
-                    <td className="py-4 px-5">
-                      <div className="font-bold text-slate-900 dark:text-slate-100 text-sm">
+                    <td className="py-3.5 px-5">
+                      <div className="font-semibold text-slate-900 dark:text-slate-100 text-sm">
                         {ex.name}
                       </div>
-                      <div className="text-[11px] text-slate-400 mt-0.5">
-                        আইডি: {ex.id} • টাইপ: {ex.type}
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono">
+                        {ex.id} · {ex.type}
                       </div>
                     </td>
 
-                    <td className="py-4 px-4 text-slate-600 dark:text-slate-300">
-                      <div className="font-semibold">{ex.subject}</div>
-                      <div className="text-[11px] text-slate-400">{ex.chapter}</div>
+                    <td className="py-3.5 px-4 text-slate-700 dark:text-slate-300">
+                      <div className="font-medium">{ex.subject}</div>
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                        {ex.chapter}
+                      </div>
                     </td>
 
-                    <td className="py-4 px-4 text-center font-mono font-bold tabular-nums">
+                    <td className="py-3.5 px-4 text-right font-mono font-semibold tabular-nums text-slate-900 dark:text-slate-100 whitespace-nowrap">
                       {toBanglaNum(ex.questions.length)}টি
                     </td>
 
-                    <td className="py-4 px-4 text-center font-mono tabular-nums text-slate-600 dark:text-slate-300">
+                    <td className="py-3.5 px-4 text-right font-mono tabular-nums text-slate-600 dark:text-slate-300 whitespace-nowrap">
                       <div>{toBanglaNum(ex.minutes)} মিনিট</div>
-                      <div className="text-[10px] text-slate-400">
-                        {toBanglaNum(getExamTotalMarks(ex))} মার্কস
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                        {toBanglaNum(getExamTotalMarks(ex))} নম্বর
                       </div>
                     </td>
 
-                    <td className="py-4 px-4 text-center">
+                    <td className="py-3.5 px-4 text-center whitespace-nowrap">
                       <span
-                        className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                        className={`inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold ${
                           ex.published
-                            ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400"
-                            : "bg-slate-100 dark:bg-slate-800 text-slate-500"
+                            ? "bg-emerald-50 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400"
+                            : "bg-slate-100 dark:bg-[#182234] text-slate-500 dark:text-slate-400"
                         }`}
                       >
                         {ex.published ? "প্রকাশিত" : "ড্রাফট"}
                       </span>
                     </td>
 
-                    <td className="py-4 px-5 text-right whitespace-nowrap">
-                      <div className="flex items-center justify-end gap-1.5">
+                    <td className="py-3.5 px-5 text-right whitespace-nowrap">
+                      <div className="inline-flex items-center justify-end gap-1.5">
                         <button
                           type="button"
                           onClick={() => handleEditExam(ex)}
-                          className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/50"
+                          className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/15 transition-colors"
                           title="পরীক্ষা সম্পাদনা করুন"
+                          aria-label="পরীক্ষা সম্পাদনা করুন"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
                         </button>
@@ -410,16 +409,18 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                             };
                             portal.saveExam(dupe);
                           }}
-                          className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                          className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#182234] transition-colors"
                           title="ডুপ্লিকেট করুন"
+                          aria-label="ডুপ্লিকেট করুন"
                         >
                           <Copy className="w-3.5 h-3.5" />
                         </button>
                         <button
                           type="button"
                           onClick={() => setDeleteConfirmId(ex.id)}
-                          className="p-2 rounded-xl border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50"
+                          className="p-2 rounded-lg border border-rose-200 dark:border-rose-500/30 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/15 transition-colors"
                           title="মুছে ফেলুন"
+                          aria-label="মুছে ফেলুন"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -433,30 +434,30 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
         </div>
       )}
 
-      {/* Tab 2: Full Exam & Question Studio Editor */}
+      {/* Tab 2: Full Exam & Question Editor */}
       {activeTab === "editor" && editingExam && (
         <div className="space-y-6">
           {/* Exam Metadata Card */}
-          <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 space-y-4 shadow-xs">
-            <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
+          <div className="rounded-2xl bg-white dark:bg-[#111827] border border-slate-200/90 dark:border-slate-800 p-5 sm:p-6 space-y-5">
+            <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
               <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                <Edit3 className="w-4 h-4 text-blue-600" />
+                <Edit3 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 <span>পরীক্ষার মূল বিবরণ ও নিয়মাবলী</span>
               </h2>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setBulkImportOpen(true)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-bold hover:bg-indigo-50 dark:hover:bg-indigo-950/40"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-[#182234]"
                 >
-                  <Upload className="w-3.5 h-3.5" />
-                  <span>বাল্ক প্রশ্ন যুক্ত করুন</span>
+                  <Upload className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                  <span>বাল্ক প্রশ্ন যুক্ত</span>
                 </button>
                 <button
                   type="button"
                   onClick={handleSaveExam}
-                  className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition-colors"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>পরীক্ষা সংরক্ষণ করুন</span>
@@ -466,7 +467,7 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="sm:col-span-2">
-                <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   পরীক্ষার নাম
                 </label>
                 <input
@@ -475,12 +476,12 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                   onChange={(e) =>
                     setEditingExam({ ...editingExam, name: e.target.value })
                   }
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100 focus:outline-hidden focus:border-blue-500 font-semibold"
+                  className="w-full px-3.5 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#182234] text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:border-blue-500 font-medium"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   কোর্স / ব্যাচ
                 </label>
                 <select
@@ -488,7 +489,7 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                   onChange={(e) =>
                     setEditingExam({ ...editingExam, courseId: e.target.value })
                   }
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100"
+                  className="w-full px-3.5 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#182234] text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:border-blue-500"
                 >
                   {courses.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -499,7 +500,7 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   বিষয়
                 </label>
                 <input
@@ -508,12 +509,12 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                   onChange={(e) =>
                     setEditingExam({ ...editingExam, subject: e.target.value })
                   }
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100"
+                  className="w-full px-3.5 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#182234] text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   অধ্যায়
                 </label>
                 <input
@@ -522,12 +523,12 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                   onChange={(e) =>
                     setEditingExam({ ...editingExam, chapter: e.target.value })
                   }
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100"
+                  className="w-full px-3.5 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#182234] text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   সময় (মিনিট)
                 </label>
                 <input
@@ -540,12 +541,12 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                       minutes: Math.max(1, Number(e.target.value))
                     })
                   }
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-mono text-slate-900 dark:text-slate-100"
+                  className="w-full px-3.5 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#182234] text-sm font-mono text-slate-900 dark:text-slate-100 focus:outline-hidden focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   নেগেটিভ মার্ক
                 </label>
                 <input
@@ -559,12 +560,12 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                       negative: Math.max(0, Number(e.target.value))
                     })
                   }
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-mono text-slate-900 dark:text-slate-100"
+                  className="w-full px-3.5 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#182234] text-sm font-mono text-slate-900 dark:text-slate-100 focus:outline-hidden focus:border-blue-500"
                 />
               </div>
 
-              <div className="flex items-center gap-4 sm:col-span-2 pt-2">
-                <label className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
+              <div className="flex flex-wrap items-center gap-5 sm:col-span-2 pt-2">
+                <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={editingExam.published}
@@ -573,10 +574,10 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                     }
                     className="rounded text-blue-600"
                   />
-                  <span>সরাসরি শিক্ষার্থীদের জন্য প্রকাশ করুন (Published)</span>
+                  <span>শিক্ষার্থীদের জন্য প্রকাশ করুন (Published)</span>
                 </label>
 
-                <label className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
+                <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={editingExam.retakeAllowed}
@@ -591,10 +592,10 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
             </div>
           </div>
 
-          {/* Question Studio: Sidebar + Active Question Form */}
-          <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6 items-start">
+          {/* Question Studio */}
+          <div className="grid grid-cols-1 lg:grid-cols-[296px_1fr] gap-6 items-start">
             {/* Question Selector List */}
-            <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 space-y-3 shadow-xs">
+            <div className="rounded-2xl bg-white dark:bg-[#111827] border border-slate-200/90 dark:border-slate-800 p-4 space-y-3">
               <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                 <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
                   প্রশ্ন তালিকা ({toBanglaNum(editingExam.questions.length)})
@@ -602,64 +603,60 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                 <button
                   type="button"
                   onClick={handleAddQuestion}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 text-xs font-bold hover:bg-blue-100"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400 text-xs font-semibold hover:bg-blue-100 dark:hover:bg-blue-500/25 transition-colors"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>প্রশ্ন যোগ</span>
                 </button>
               </div>
 
-              <div className="max-h-[60vh] overflow-y-auto space-y-1.5 pr-1">
+              <div className="max-h-[60vh] overflow-y-auto space-y-1.5 pr-0.5">
                 {editingExam.questions.map((q, idx) => {
                   const isCurrent = idx === activeQIndex;
                   return (
                     <div
                       key={q.id}
-                      onClick={() => setActiveQIndex(idx)}
-                      className={`p-3 rounded-2xl border text-xs cursor-pointer transition-all ${
+                      className={`p-2.5 rounded-xl border text-xs transition-colors flex items-center justify-between gap-2 ${
                         isCurrent
-                          ? "border-blue-500 bg-blue-50/70 dark:bg-blue-950/40 shadow-xs ring-1 ring-blue-500"
-                          : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
+                          ? "border-blue-500 bg-blue-50/70 dark:bg-blue-500/15"
+                          : "border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
                       }`}
                     >
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="font-bold text-slate-900 dark:text-slate-100 truncate">
-                          {toBanglaNum(idx + 1)}. {q.text ? q.text.slice(0, 28) : "খালি প্রশ্ন"}
-                        </span>
-                        <div className="flex items-center gap-1 shrink-0">
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleMoveQuestion(idx, "up");
-                            }}
-                            disabled={idx === 0}
-                            className="p-1 rounded text-slate-400 hover:text-slate-700 disabled:opacity-20"
-                          >
-                            <ArrowUp className="w-3 h-3" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleMoveQuestion(idx, "down");
-                            }}
-                            disabled={idx === editingExam.questions.length - 1}
-                            className="p-1 rounded text-slate-400 hover:text-slate-700 disabled:opacity-20"
-                          >
-                            <ArrowDown className="w-3 h-3" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteQuestion(idx);
-                            }}
-                            className="p-1 rounded text-red-400 hover:text-red-600"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        </div>
+                      <button
+                        type="button"
+                        onClick={() => setActiveQIndex(idx)}
+                        className="flex-1 min-w-0 text-left font-semibold text-slate-900 dark:text-slate-100 truncate"
+                      >
+                        {toBanglaNum(idx + 1)}.{" "}
+                        {q.text ? q.text.slice(0, 28) : "খালি প্রশ্ন"}
+                      </button>
+                      <div className="flex items-center gap-0.5 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => handleMoveQuestion(idx, "up")}
+                          disabled={idx === 0}
+                          className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 disabled:opacity-25"
+                          aria-label="উপরে সরান"
+                        >
+                          <ArrowUp className="w-3 h-3" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleMoveQuestion(idx, "down")}
+                          disabled={idx === editingExam.questions.length - 1}
+                          className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 disabled:opacity-25"
+                          aria-label="নিচে সরান"
+                        >
+                          <ArrowDown className="w-3 h-3" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteQuestion(idx)}
+                          className="p-1 rounded text-rose-400 hover:text-rose-600"
+                          aria-label="প্রশ্ন মুছুন"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
                       </div>
                     </div>
                   );
@@ -669,10 +666,10 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
 
             {/* Active Question Editor Form */}
             {currentQ && (
-              <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 space-y-5 shadow-xs">
+              <div className="rounded-2xl bg-white dark:bg-[#111827] border border-slate-200/90 dark:border-slate-800 p-5 sm:p-7 space-y-5">
                 <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
                   <span className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-lg bg-blue-600 text-white font-mono text-xs flex items-center justify-center font-bold">
+                    <span className="w-6 h-6 rounded-md bg-blue-600 text-white font-mono text-xs flex items-center justify-center font-bold">
                       {toBanglaNum(activeQIndex + 1)}
                     </span>
                     <span>প্রশ্ন সম্পাদনা</span>
@@ -682,7 +679,7 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                     <button
                       type="button"
                       onClick={() => handleDuplicateQuestion(activeQIndex)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#182234]"
                     >
                       <Copy className="w-3.5 h-3.5" />
                       <span>ডুপ্লিকেট</span>
@@ -690,7 +687,7 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                     <button
                       type="button"
                       onClick={() => handleDeleteQuestion(activeQIndex)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-red-200 dark:border-red-900 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-rose-200 dark:border-rose-500/30 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/15"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                       <span>মুছুন</span>
@@ -701,7 +698,7 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                 {/* Question Text */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                       প্রশ্নের মূল বক্তব্য (Stem)
                     </label>
                     <button
@@ -713,7 +710,7 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                           label: `প্রশ্ন #${activeQIndex + 1}`
                         })
                       }
-                      className="inline-flex items-center gap-1.5 text-xs text-blue-600 font-bold"
+                      className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 font-semibold hover:underline"
                     >
                       <Sigma className="w-3.5 h-3.5" />
                       <span>ফর্মুলা যুক্ত করুন</span>
@@ -724,12 +721,12 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                     value={currentQ.text}
                     onChange={(e) => updateQuestion(activeQIndex, { text: e.target.value })}
                     placeholder="এখানে প্রশ্ন টাইপ করুন... যেমন: একটি বস্তুর ভর $m = 5\text{ kg}$..."
-                    className="w-full p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:border-blue-500"
+                    className="w-full p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#182234] text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:border-blue-500"
                   />
                   {currentQ.text && (
-                    <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60 text-xs text-slate-700 dark:text-slate-300">
-                      <span className="font-bold block text-[10px] text-slate-400 uppercase mb-1">
-                        লাইভ প্রিভিউ:
+                    <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#182234] border border-slate-200/80 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300">
+                      <span className="font-semibold block text-[11px] text-slate-400 mb-1">
+                        লাইভ প্রিভিউ
                       </span>
                       <MathText text={currentQ.text} />
                     </div>
@@ -737,8 +734,8 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                 </div>
 
                 {/* Options */}
-                <div className="space-y-3 pt-2">
-                  <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
+                <div className="space-y-3 pt-1">
+                  <div className="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
                     <span>উত্তর অপশনসমূহ (সঠিক উত্তরে রেডিও সিলেক্ট করুন)</span>
                     <button
                       type="button"
@@ -746,9 +743,9 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                         const next = [...currentQ.options, ""];
                         updateQuestion(activeQIndex, { options: next });
                       }}
-                      className="text-blue-600 hover:underline text-[11px]"
+                      className="text-blue-600 dark:text-blue-400 hover:underline text-xs"
                     >
-                      + নতুন অপশন যোগ
+                      + নতুন অপশন
                     </button>
                   </div>
 
@@ -756,14 +753,14 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                     {currentQ.options.map((opt, oIdx) => (
                       <div
                         key={oIdx}
-                        className={`p-3 rounded-2xl border transition-all ${
+                        className={`p-3 rounded-xl border transition-colors ${
                           currentQ.answer === oIdx
-                            ? "border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/30"
-                            : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/50"
+                            ? "border-emerald-500 bg-emerald-50/50 dark:bg-emerald-500/10"
+                            : "border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#182234]/50"
                         }`}
                       >
-                        <div className="flex items-center justify-between text-xs mb-1.5">
-                          <label className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200 cursor-pointer">
+                        <div className="flex items-center justify-between text-xs mb-2">
+                          <label className="flex items-center gap-1.5 font-semibold text-slate-800 dark:text-slate-200 cursor-pointer">
                             <input
                               type="radio"
                               name={`admin_ans_${currentQ.id}`}
@@ -787,7 +784,7 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                                   )}`
                                 })
                               }
-                              className="p-1 rounded text-blue-600 hover:bg-blue-50 text-[11px]"
+                              className="p-1 rounded text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/15 text-xs font-mono"
                               title="ফর্মুলা যুক্ত করুন"
                             >
                               Σ
@@ -804,7 +801,7 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                                     answer: nextAns
                                   });
                                 }}
-                                className="p-1 rounded text-red-400 hover:text-red-600"
+                                className="p-1 rounded text-rose-400 hover:text-rose-600"
                                 title="অপশন মুছুন"
                               >
                                 <Trash2 className="w-3 h-3" />
@@ -821,7 +818,7 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                             next[oIdx] = e.target.value;
                             updateQuestion(activeQIndex, { options: next });
                           }}
-                          className="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs text-slate-900 dark:text-slate-100"
+                          className="w-full px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#111827] text-xs text-slate-900 dark:text-slate-100 focus:outline-hidden focus:border-blue-500"
                         />
                       </div>
                     ))}
@@ -829,10 +826,10 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                 </div>
 
                 {/* Explanation */}
-                <div className="space-y-2 pt-2">
+                <div className="space-y-2 pt-1">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                      সঠিক উত্তরের ব্যাখ্যা ও সমাধান (Explanation)
+                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                      সঠিক উত্তরের ব্যাখ্যা ও সমাধান
                     </label>
                     <button
                       type="button"
@@ -843,7 +840,7 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                           label: `প্রশ্ন #${activeQIndex + 1} ব্যাখ্যা`
                         })
                       }
-                      className="inline-flex items-center gap-1.5 text-xs text-blue-600 font-bold"
+                      className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 font-semibold hover:underline"
                     >
                       <Sigma className="w-3.5 h-3.5" />
                       <span>ফর্মুলা</span>
@@ -856,18 +853,18 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                       updateQuestion(activeQIndex, { explanation: e.target.value })
                     }
                     placeholder="ব্যাখ্যা লিখুন..."
-                    className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100"
+                    className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#182234] text-xs text-slate-900 dark:text-slate-100 focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
 
                 {/* Question Image Attachment */}
-                <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                <div className="pt-3 border-t border-slate-100 dark:border-slate-800">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                       প্রশ্নের চিত্র / ডায়াগ্রাম
                     </span>
-                    <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold cursor-pointer">
-                      <ImageIcon className="w-3.5 h-3.5 text-blue-500" />
+                    <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-[#182234] text-xs font-semibold text-slate-700 dark:text-slate-200 cursor-pointer transition-colors">
+                      <ImageIcon className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                       <span>চিত্র আপলোড</span>
                       <input
                         type="file"
@@ -878,9 +875,12 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                     </label>
                   </div>
                   {currentQ.questionImages && currentQ.questionImages.length > 0 && (
-                    <div className="flex gap-2 mt-2">
+                    <div className="flex flex-wrap gap-2 mt-3">
                       {currentQ.questionImages.map((img, i) => (
-                        <div key={i} className="relative group w-20 h-20 rounded-xl overflow-hidden border">
+                        <div
+                          key={i}
+                          className="relative group w-20 h-20 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700"
+                        >
                           <img src={img} alt="Q" className="w-full h-full object-cover" />
                           <button
                             type="button"
@@ -888,7 +888,8 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                               const next = currentQ.questionImages?.filter((_, idx) => idx !== i);
                               updateQuestion(activeQIndex, { questionImages: next });
                             }}
-                            className="absolute inset-0 bg-red-600/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="absolute inset-0 bg-rose-600/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                            aria-label="চিত্র মুছুন"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -906,38 +907,37 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
       {/* Tab 3: System Notice & Maintenance */}
       {activeTab === "system" && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Notice Board Editor */}
-          <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 space-y-4 shadow-xs">
+          <div className="rounded-2xl bg-white dark:bg-[#111827] border border-slate-200/90 dark:border-slate-800 p-6 space-y-4">
             <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <Megaphone className="w-5 h-5 text-blue-600" />
+              <Megaphone className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               <span>সিস্টেম নোটিশ ও ঘোষণা ব্যানার</span>
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
               এই নোটিশটি ওয়েবসাইটের একেবারে উপরে সকল শিক্ষার্থীর নিকট প্রদর্শিত হবে।
             </p>
 
-            <div className="space-y-3 pt-2">
+            <div className="space-y-3 pt-1">
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   নোটিশের শিরোনাম
                 </label>
                 <input
                   type="text"
                   value={noticeTitle}
                   onChange={(e) => setNoticeTitle(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-900 dark:text-slate-100"
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#182234] text-sm font-medium text-slate-900 dark:text-slate-100 focus:outline-hidden focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  বার্তা (Message)
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                  বার্তা
                 </label>
                 <textarea
                   rows={3}
                   value={noticeMessage}
                   onChange={(e) => setNoticeMessage(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100"
+                  className="w-full p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#182234] text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:border-blue-500"
                 />
               </div>
 
@@ -951,7 +951,7 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                       updatedAt: new Date().toISOString()
                     })
                   }
-                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-colors shadow-xs"
+                  className="px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors"
                 >
                   নোটিশ হালনাগাদ করুন
                 </button>
@@ -959,31 +959,30 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
             </div>
           </div>
 
-          {/* Maintenance Mode Controller */}
-          <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 space-y-4 shadow-xs">
+          <div className="rounded-2xl bg-white dark:bg-[#111827] border border-slate-200/90 dark:border-slate-800 p-6 space-y-4">
             <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-amber-500" />
+              <Clock className="w-4 h-4 text-amber-500" />
               <span>মেইনটেন্যান্স মোড সেটিংস</span>
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
               জরুরি সার্ভার আপগ্রেডের সময় এটি সক্রিয় করলে সাধারণ শিক্ষার্থীরা অপেক্ষা বার্তা দেখবে।
             </p>
 
-            <div className="space-y-4 pt-2">
-              <label className="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60 cursor-pointer">
+            <div className="space-y-4 pt-1">
+              <label className="flex items-center gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-[#182234] border border-slate-200/80 dark:border-slate-800 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={maintEnabled}
                   onChange={(e) => setMaintEnabled(e.target.checked)}
                   className="rounded text-amber-600 focus:ring-amber-500 w-4 h-4"
                 />
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                   মেইনটেন্যান্স মোড সক্রিয় করুন
                 </span>
               </label>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   আনুমানিক প্রত্যাশিত সময়
                 </label>
                 <input
@@ -991,19 +990,19 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                   value={maintExpected}
                   onChange={(e) => setMaintExpected(e.target.value)}
                   placeholder="যেমন: ৩০ মিনিট পর"
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100"
+                  className="w-full px-3.5 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#182234] text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   মেইনটেন্যান্স বার্তা
                 </label>
                 <textarea
                   rows={2}
                   value={maintMessage}
                   onChange={(e) => setMaintMessage(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100"
+                  className="w-full p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#182234] text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:border-blue-500"
                 />
               </div>
 
@@ -1018,7 +1017,7 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                       enabledAt: new Date().toISOString()
                     })
                   }
-                  className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-colors shadow-xs"
+                  className="px-5 py-2.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold transition-colors"
                 >
                   মেইনটেন্যান্স সেটিংস সংরক্ষণ করুন
                 </button>
@@ -1030,16 +1029,16 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
 
       {/* Tab 4: Backup & Restore */}
       {activeTab === "backup" && (
-        <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 space-y-6 shadow-xs max-w-2xl">
+        <div className="rounded-2xl bg-white dark:bg-[#111827] border border-slate-200/90 dark:border-slate-800 p-6 sm:p-7 space-y-5 max-w-2xl">
           <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <Download className="w-5 h-5 text-emerald-600" />
+            <Download className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             <span>সিস্টেম ডেটা এক্সপোর্ট ও ব্যাকআপ</span>
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            পোর্টালের সকল কোর্স, প্রশ্নপত্র, এবং মডেল টেস্ট নিরাপদ ব্যাকআপ হিসেবে JSON ফাইল আকারে ডাউনলোড করুন।
+          <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+            পোর্টালের সকল কোর্স, প্রশ্নপত্র এবং মডেল টেস্ট নিরাপদ ব্যাকআপ হিসেবে JSON ফাইল আকারে ডাউনলোড করুন।
           </p>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div>
             <button
               type="button"
               onClick={() =>
@@ -1048,7 +1047,7 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
                   { courses, exams, notice, exportedAt: new Date().toISOString() }
                 )
               }
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-colors shadow-xs"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold transition-colors"
             >
               <Download className="w-4 h-4" />
               <span>সম্পূর্ণ ডেটা JSON ডাউনলোড করুন</span>
@@ -1057,7 +1056,7 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
         </div>
       )}
 
-      {/* Bulk Import Modal */}
+      {/* Modals */}
       <BulkImportModal
         open={bulkImportOpen}
         courses={courses}
@@ -1087,7 +1086,6 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
         onClose={() => setBulkImportOpen(false)}
       />
 
-      {/* Formula Editor Modal */}
       <FormulaEditorModal
         open={Boolean(formulaTarget)}
         targetLabel={formulaTarget?.label}
@@ -1095,7 +1093,6 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
         onClose={() => setFormulaTarget(null)}
       />
 
-      {/* Delete Exam Confirmation Modal */}
       <ConfirmModal
         open={Boolean(deleteConfirmId)}
         title="পরীক্ষাটি মুছে ফেলতে চান?"

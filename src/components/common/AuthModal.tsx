@@ -8,10 +8,10 @@ import {
   UserCheck,
   Eye,
   EyeOff,
-  X,
-  Sparkles
+  X
 } from "lucide-react";
 import { User, UserRole } from "@/types";
+import { BrandLogo } from "./BrandLogo";
 
 interface AuthModalProps {
   open: boolean;
@@ -113,48 +113,49 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-xs p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4"
       role="dialog"
       aria-modal="true"
+      aria-labelledby="auth-modal-title"
     >
-      <div className="w-full max-w-md rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-2xl">
-        <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
-          <div className="flex items-center gap-2">
-            <span className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
-              <Sparkles className="w-5 h-5" />
-            </span>
+      <div className="w-full max-w-md rounded-2xl bg-[#0C0F16] border border-white/[0.1] p-6 shadow-2xl shadow-black/70">
+        <div className="flex items-center justify-between pb-4 border-b border-white/[0.07]">
+          <div className="flex items-center gap-3">
+            <BrandLogo size={32} />
             <div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+              <h3
+                id="auth-modal-title"
+                className="text-base font-bold text-slate-50"
+              >
                 {tab === "login" ? "অ্যাকাউন্টে প্রবেশ" : "নতুন অ্যাকাউন্ট তৈরি"}
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Learning Generation Exam Portal
-              </p>
+              <p className="text-xs text-slate-400">Learning Generation</p>
             </div>
           </div>
           {canClose && (
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+              aria-label="বন্ধ করুন"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-white/[0.06] transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
           )}
         </div>
 
-        {/* Tab switch */}
-        <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 my-5 text-xs font-semibold">
+        {/* Segmented Tab Switch */}
+        <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-[#131824] border border-white/[0.06] my-5 text-xs font-semibold">
           <button
             type="button"
             onClick={() => {
               setTab("login");
               setError("");
             }}
-            className={`py-2 rounded-lg transition-all ${
+            className={`py-2 rounded-lg transition-colors ${
               tab === "login"
-                ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                ? "bg-[#1C2436] text-white shadow-xs"
+                : "text-slate-400 hover:text-slate-200"
             }`}
           >
             লগইন
@@ -165,10 +166,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               setTab("register");
               setError("");
             }}
-            className={`py-2 rounded-lg transition-all ${
+            className={`py-2 rounded-lg transition-colors ${
               tab === "register"
-                ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                ? "bg-[#1C2436] text-white shadow-xs"
+                : "text-slate-400 hover:text-slate-200"
             }`}
           >
             রেজিস্টার
@@ -177,33 +178,33 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
         {/* Quick Demo Logins */}
         {tab === "login" && (
-          <div className="mb-5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60 space-y-2">
-            <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-              দ্রুত পরীক্ষামূলক লগইন:
+          <div className="mb-5 space-y-2">
+            <div className="text-xs font-medium text-slate-400">
+              দ্রুত ডেমো অ্যাকাউন্ট:
             </div>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => handleQuickLogin("demo@lg.com", "123456")}
-                className="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300 hover:border-blue-500 hover:text-blue-600 transition-colors"
+                className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-[#131824] border border-white/[0.08] text-xs font-semibold text-slate-200 hover:border-blue-500/60 hover:text-blue-300 transition-colors"
               >
-                <UserCheck className="w-3.5 h-3.5 text-blue-500" />
-                <span>তানভীর (শিক্ষার্থী)</span>
+                <UserCheck className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                <span className="truncate">তানভীর (শিক্ষার্থী)</span>
               </button>
               <button
                 type="button"
                 onClick={() => handleQuickLogin("admin@lg.com", "admin123")}
-                className="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300 hover:border-blue-500 hover:text-blue-600 transition-colors"
+                className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-[#131824] border border-white/[0.08] text-xs font-semibold text-slate-200 hover:border-blue-500/60 hover:text-blue-300 transition-colors"
               >
-                <ShieldCheck className="w-3.5 h-3.5 text-indigo-500" />
-                <span>অ্যাডমিন ইনস্ট্রাক্টর</span>
+                <ShieldCheck className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                <span className="truncate">অ্যাডমিন স্টুডিও</span>
               </button>
             </div>
           </div>
         )}
 
         {error && (
-          <div className="mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-900/60 text-red-600 dark:text-red-400 text-xs">
+          <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-300 text-xs font-medium">
             {error}
           </div>
         )}
@@ -211,7 +212,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         <form onSubmit={handleSubmit} className="space-y-3.5">
           {tab === "register" && (
             <div>
-              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                 পূর্ণ নাম
               </label>
               <input
@@ -220,13 +221,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="যেমন: তানভীর আহমেদ"
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:border-blue-500"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.1] bg-[#131824] text-sm text-slate-100 placeholder:text-slate-500 focus:border-blue-500"
               />
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
               ইমেইল
             </label>
             <input
@@ -235,12 +236,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="name@example.com"
-              className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:border-blue-500"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.1] bg-[#131824] text-sm text-slate-100 placeholder:text-slate-500 focus:border-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
               পাসওয়ার্ড
             </label>
             <div className="relative">
@@ -250,14 +251,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="কমপক্ষে ৬ অক্ষর"
-                className="w-full pl-3.5 pr-10 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:border-blue-500"
+                className="w-full pl-3.5 pr-10 py-2.5 rounded-xl border border-white/[0.1] bg-[#131824] text-sm text-slate-100 placeholder:text-slate-500 focus:border-blue-500"
               />
               <button
                 type="button"
                 onClick={() => setShowPw(!showPw)}
-                className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                aria-label={showPw ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখুন"}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-200"
               >
-                {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showPw ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
               </button>
             </div>
             {tab === "register" && password && (
@@ -270,7 +276,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                         ? step <= 2
                           ? "bg-amber-500"
                           : "bg-emerald-500"
-                        : "bg-slate-200 dark:bg-slate-700"
+                        : "bg-white/[0.1]"
                     }`}
                   />
                 ))}
@@ -281,7 +287,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {tab === "register" && (
             <>
               <div>
-                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                   পাসওয়ার্ড নিশ্চিত করুন
                 </label>
                 <input
@@ -290,21 +296,25 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   value={confirmPw}
                   onChange={(e) => setConfirmPw(e.target.value)}
                   placeholder="পুনরায় পাসওয়ার্ড লিখুন"
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:border-blue-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.1] bg-[#131824] text-sm text-slate-100 placeholder:text-slate-500 focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                   টার্গেট ব্যাচ
                 </label>
                 <select
                   value={targetBatch}
                   onChange={(e) => setTargetBatch(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:border-blue-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.1] bg-[#131824] text-sm text-slate-100 focus:border-blue-500"
                 >
-                  <option value="SSC 26/27 Premium Batch">SSC 26/27 Premium Batch</option>
-                  <option value="ACS COMPACT GST 2025">ACS COMPACT GST 2025</option>
+                  <option value="SSC 26/27 Premium Batch">
+                    SSC 26/27 Premium Batch
+                  </option>
+                  <option value="ACS COMPACT GST 2025">
+                    ACS COMPACT GST 2025
+                  </option>
                   <option value="SUST-RU-BUP Special Varsity Batch">
                     SUST-RU-BUP Special Varsity Batch
                   </option>
@@ -312,31 +322,31 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  ভূমিকা (Role)
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                  ভূমিকা
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setRole("student")}
-                    className={`py-2 px-3 rounded-xl border text-xs font-medium text-center ${
+                    className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-colors ${
                       role === "student"
-                        ? "border-blue-500 bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold"
-                        : "border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400"
+                        ? "border-blue-500 bg-blue-500/15 text-blue-300"
+                        : "border-white/[0.1] text-slate-400"
                     }`}
                   >
-                    শিক্ষার্থী (Student)
+                    শিক্ষার্থী
                   </button>
                   <button
                     type="button"
                     onClick={() => setRole("admin")}
-                    className={`py-2 px-3 rounded-xl border text-xs font-medium text-center ${
+                    className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-colors ${
                       role === "admin"
-                        ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold"
-                        : "border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400"
+                        ? "border-blue-500 bg-blue-500/15 text-blue-300"
+                        : "border-white/[0.1] text-slate-400"
                     }`}
                   >
-                    অ্যাডমিন (Admin Studio)
+                    ইনস্ট্রাক্টর / অ্যাডমিন
                   </button>
                 </div>
               </div>
@@ -345,7 +355,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
           <button
             type="submit"
-            className="w-full mt-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm"
+            className="w-full mt-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2"
           >
             {tab === "login" ? (
               <>

@@ -404,30 +404,41 @@ export function parseJsonQuestions(
 
       if (Array.isArray(item.questions)) {
         const normalizedQs = item.questions
-          .map((q: any, idx: number) => {
-            const text = String(q?.text || q?.question || "").trim();
-            const options = Array.isArray(q?.options)
-              ? q.options.map((o: any) => String(o ?? "").trim()).filter(Boolean)
+          .map((rawQ: unknown, idx: number) => {
+            const q = (rawQ && typeof rawQ === "object"
+              ? rawQ
+              : {}) as Record<string, unknown>;
+            const text = String(q.text || q.question || "").trim();
+            const options = Array.isArray(q.options)
+              ? q.options.map((o: unknown) => String(o ?? "").trim()).filter(Boolean)
               : [];
             if (!text || options.length < 2) return null;
             return enrichQuestionFormulas({
-              id: String(q?.id || makeQuestionId(idx)),
+              id: String(q.id || makeQuestionId(idx)),
               text,
               questionType:
-                q?.questionType === "true_false" || options.length === 2
+                q.questionType === "true_false" || options.length === 2
                   ? "true_false"
                   : "mcq",
               options,
-              answer: parseAnswerIndex(q?.answer, options.length),
-              explanation: String(q?.explanation || "").trim(),
-              subject: q?.subject || item.subject || defaults?.subject || undefined,
-              chapter: q?.chapter || item.chapter || defaults?.chapter || undefined,
-              topic: q?.topic || undefined,
-              difficulty: normalizeDifficulty(q?.difficulty),
-              questionImages: Array.isArray(q?.images)
-                ? q.images.filter((s: any) => typeof s === "string")
+              answer: parseAnswerIndex(q.answer, options.length),
+              explanation: String(q.explanation || "").trim(),
+              subject:
+                (typeof q.subject === "string" && q.subject) ||
+                item.subject ||
+                defaults?.subject ||
+                undefined,
+              chapter:
+                (typeof q.chapter === "string" && q.chapter) ||
+                item.chapter ||
+                defaults?.chapter ||
+                undefined,
+              topic: typeof q.topic === "string" ? q.topic : undefined,
+              difficulty: normalizeDifficulty(q.difficulty),
+              questionImages: Array.isArray(q.images)
+                ? q.images.filter((s: unknown): s is string => typeof s === "string")
                 : undefined,
-              marks: typeof q?.marks === "number" && q.marks > 0 ? q.marks : undefined
+              marks: typeof q.marks === "number" && q.marks > 0 ? q.marks : undefined
             });
           })
           .filter(Boolean) as Question[];
@@ -446,7 +457,7 @@ export function parseJsonQuestions(
 
       const text = String(item.text || item.question || "").trim();
       const options = Array.isArray(item.options)
-        ? item.options.map((o: any) => String(o ?? "").trim()).filter(Boolean)
+        ? item.options.map((o: unknown) => String(o ?? "").trim()).filter(Boolean)
         : [];
       if (text && options.length >= 2) {
         questions.push(
@@ -465,7 +476,7 @@ export function parseJsonQuestions(
             topic: item.topic || undefined,
             difficulty: normalizeDifficulty(item.difficulty),
             questionImages: Array.isArray(item.images)
-              ? item.images.filter((s: any) => typeof s === "string")
+              ? item.images.filter((s: unknown): s is string => typeof s === "string")
               : undefined,
             marks:
               typeof item.marks === "number" && item.marks > 0

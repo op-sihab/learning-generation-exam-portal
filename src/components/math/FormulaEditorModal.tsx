@@ -431,22 +431,22 @@ export const FormulaEditorModal: React.FC<FormulaEditorModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-xs p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4"
       role="dialog"
       aria-modal="true"
     >
-      <div className="w-full max-w-3xl max-h-[92vh] flex flex-col rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
+      <div className="w-full max-w-3xl max-h-[92vh] flex flex-col rounded-2xl bg-[#0C0F16] border border-white/[0.10] shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.08]">
           <div className="flex items-center gap-2.5">
-            <span className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
+            <span className="p-2 rounded-lg bg-blue-500/15 border border-blue-500/25 text-blue-400">
               <Sigma className="w-5 h-5" />
             </span>
             <div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+              <h3 className="text-base font-bold text-white">
                 ফর্মুলা এডিটর ও সিম্বল কিবোর্ড
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-400">
                 {targetLabel}-এ KaTeX এবং mhchem ফর্মুলা যুক্ত করুন
               </p>
             </div>
@@ -454,22 +454,23 @@ export const FormulaEditorModal: React.FC<FormulaEditorModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.06] transition-colors"
+            aria-label="বন্ধ করুন"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Category Nav */}
-        <div className="flex items-center justify-between px-6 py-2.5 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200/80 dark:border-slate-800">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 px-6 py-2.5 bg-[#111622] border-b border-white/[0.08]">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
             <button
               type="button"
               onClick={() => setCategory("math")}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap ${
                 category === "math"
-                  ? "bg-blue-600 text-white shadow-xs"
-                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
+                  ? "bg-blue-600 text-white"
+                  : "text-slate-300 hover:bg-white/[0.06]"
               }`}
             >
               গণিত ও সাধারণ
@@ -477,10 +478,10 @@ export const FormulaEditorModal: React.FC<FormulaEditorModalProps> = ({
             <button
               type="button"
               onClick={() => setCategory("physics")}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap ${
                 category === "physics"
-                  ? "bg-blue-600 text-white shadow-xs"
-                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
+                  ? "bg-blue-600 text-white"
+                  : "text-slate-300 hover:bg-white/[0.06]"
               }`}
             >
               পদার্থবিজ্ঞান
@@ -488,17 +489,17 @@ export const FormulaEditorModal: React.FC<FormulaEditorModalProps> = ({
             <button
               type="button"
               onClick={() => setCategory("chemistry")}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap ${
                 category === "chemistry"
-                  ? "bg-blue-600 text-white shadow-xs"
-                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
+                  ? "bg-blue-600 text-white"
+                  : "text-slate-300 hover:bg-white/[0.06]"
               }`}
             >
               রসায়ন (mhchem)
             </button>
           </div>
 
-          <label className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-300 cursor-pointer select-none">
+          <label className="flex items-center gap-2 text-xs font-medium text-slate-300 cursor-pointer select-none">
             <input
               type="checkbox"
               checked={displayMode}
@@ -510,10 +511,10 @@ export const FormulaEditorModal: React.FC<FormulaEditorModalProps> = ({
         </div>
 
         {/* Snippets Palette */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4 max-h-56 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex-1 overflow-y-auto p-6 space-y-4 max-h-56 border-b border-white/[0.08]">
           {activeGroups.map((grp) => (
             <div key={grp.group}>
-              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+              <div className="text-[11px] font-semibold text-slate-400 mb-2">
                 {grp.group}
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -523,10 +524,10 @@ export const FormulaEditorModal: React.FC<FormulaEditorModalProps> = ({
                     type="button"
                     onClick={() => insertSnippet(it.latex)}
                     title={it.latex}
-                    className="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-950/30 text-xs font-medium text-slate-700 dark:text-slate-200 transition-colors flex items-center gap-1.5"
+                    className="px-2.5 py-1.5 rounded-lg border border-white/[0.08] bg-[#131824] hover:border-blue-500/60 text-xs font-medium text-slate-200 transition-colors flex items-center gap-1.5"
                   >
                     <span>{it.label}</span>
-                    <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">
+                    <span className="text-[10px] font-mono text-slate-500">
                       {it.latex.length > 15 ? it.latex.slice(0, 15) + "…" : it.latex}
                     </span>
                   </button>
@@ -540,13 +541,13 @@ export const FormulaEditorModal: React.FC<FormulaEditorModalProps> = ({
         <div className="p-6 space-y-4">
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+              <label className="text-xs font-semibold text-slate-300">
                 LaTeX ইনপুট কোড
               </label>
               <button
                 type="button"
                 onClick={() => setLatex("")}
-                className="inline-flex items-center gap-1 text-[11px] text-slate-400 hover:text-red-500 transition-colors"
+                className="inline-flex items-center gap-1 text-[11px] text-slate-400 hover:text-rose-400 transition-colors"
               >
                 <Eraser className="w-3.5 h-3.5" />
                 <span>ক্লিয়ার</span>
@@ -558,36 +559,36 @@ export const FormulaEditorModal: React.FC<FormulaEditorModalProps> = ({
               value={latex}
               onChange={(e) => setLatex(e.target.value)}
               placeholder="এখানে LaTeX কোড টাইপ করুন অথবা উপরের বাটনগুলোতে ক্লিক করুন..."
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-mono text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:border-blue-500"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.10] bg-[#131824] text-sm font-mono text-slate-100 placeholder:text-slate-500 focus:outline-hidden focus:border-blue-500"
             />
           </div>
 
           {/* Live Preview */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+              <span className="text-xs font-semibold text-slate-300">
                 লাইভ প্রিভিউ
               </span>
               {preview.valid ? (
-                <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400">
+                <span className="inline-flex items-center gap-1 text-[11px] text-emerald-400">
                   <CircleCheck className="w-3.5 h-3.5" />
                   <span>বৈধ LaTeX সিনট্যাক্স</span>
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 text-[11px] text-red-600 dark:text-red-400">
+                <span className="inline-flex items-center gap-1 text-[11px] text-rose-400">
                   <CircleAlert className="w-3.5 h-3.5" />
                   <span>{preview.error || "সিনট্যাক্স ত্রুটি"}</span>
                 </span>
               )}
             </div>
-            <div className="min-h-16 p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-950/70 flex items-center justify-center text-center overflow-x-auto">
+            <div className="min-h-16 p-4 rounded-xl border border-white/[0.08] bg-[#06070B] flex items-center justify-center text-center overflow-x-auto">
               {latex.trim() ? (
                 <div
-                  className="math-text-root text-base sm:text-lg"
+                  className="math-text-root text-base sm:text-lg text-slate-100"
                   dangerouslySetInnerHTML={{ __html: preview.html }}
                 />
               ) : (
-                <span className="text-xs text-slate-400 italic">
+                <span className="text-xs text-slate-500 italic">
                   ফর্মুলা লিখলে এখানে প্রিভিউ দেখা যাবে
                 </span>
               )}
@@ -596,12 +597,12 @@ export const FormulaEditorModal: React.FC<FormulaEditorModalProps> = ({
         </div>
 
         {/* Footer Buttons */}
-        <div className="flex items-center justify-between px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800">
+        <div className="flex items-center justify-between px-6 py-4 bg-[#111622] border-t border-white/[0.08]">
           <button
             type="button"
             onClick={handleCopy}
             disabled={!latex.trim()}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-800 disabled:opacity-40 transition-colors"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-white/[0.10] bg-[#131824] text-xs font-semibold text-slate-200 hover:border-white/[0.20] disabled:opacity-40 transition-colors"
           >
             <Copy className="w-3.5 h-3.5" />
             <span>{copied ? "কপি হয়েছে!" : "কোড কপি করুন"}</span>
@@ -611,7 +612,7 @@ export const FormulaEditorModal: React.FC<FormulaEditorModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+              className="px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:bg-white/[0.06] transition-colors"
             >
               বাতিল
             </button>
@@ -619,7 +620,7 @@ export const FormulaEditorModal: React.FC<FormulaEditorModalProps> = ({
               type="button"
               onClick={handleConfirmInsert}
               disabled={!latex.trim() || !preview.valid}
-              className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold disabled:opacity-40 transition-colors shadow-xs"
+              className="inline-flex items-center gap-1.5 px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold disabled:opacity-40 transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>ফর্মুলা ইনসার্ট করুন</span>

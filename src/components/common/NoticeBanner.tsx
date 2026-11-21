@@ -14,21 +14,19 @@ export const NoticeBanner: React.FC<NoticeBannerProps> = ({ notice }) => {
   if (dismissed || !notice || !notice.message) return null;
 
   return (
-    <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white px-4 py-2.5 text-xs sm:text-sm font-medium shadow-sm transition-all">
+    <div className="bg-[#0A0E17] text-slate-200 border-b border-white/[0.06] px-4 py-2 text-xs">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5 truncate">
-          <span className="p-1 rounded-md bg-white/20 text-white shrink-0">
-            <Megaphone className="w-3.5 h-3.5" />
-          </span>
-          <span className="font-bold underline decoration-white/40 decoration-1 underline-offset-2 shrink-0">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <Megaphone className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+          <span className="font-semibold text-slate-100 shrink-0">
             {notice.title}:
           </span>
-          <span className="truncate text-white/90">{notice.message}</span>
+          <span className="truncate text-slate-400">{notice.message}</span>
         </div>
         <button
           type="button"
           onClick={() => setDismissed(true)}
-          className="p-1 rounded hover:bg-white/20 transition-colors text-white/80 hover:text-white shrink-0"
+          className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.07] transition-colors shrink-0"
           title="নোটিশ বন্ধ করুন"
           aria-label="নোটিশ বন্ধ করুন"
         >

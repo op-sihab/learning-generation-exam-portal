@@ -29,6 +29,11 @@ import {
   DEFAULT_MAINTENANCE
 } from "../data/seedData";
 import { playTone, SoundToneType } from "../utils/audio";
+import {
+  computePortalStats,
+  getBestScoreByExam,
+  getLatestResultIdByExam
+} from "../utils/portalHelpers";
 
 export const STORAGE_KEYS = {
   courses: "lg_v7_courses",
@@ -100,116 +105,133 @@ export interface PortalContextType {
   resetAllData: () => void;
   stats: { total: number; avg: number; best: number; mins: number };
   bestScoreByExam: Map<string, number>;
+  latestResultByExam: Map<string, string>;
   hasCompletedExam: (examId: string) => boolean;
   getBestScore: (examId: string) => number | undefined;
+  getLatestResultId: (examId: string) => string | undefined;
 }
 
 const PortalContext = createContext<PortalContextType | undefined>(undefined);
 
 export const PortalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [courses, setCourses] = useState<Course[]>(() =>
-    readStorage(STORAGE_KEYS.courses, DEFAULT_COURSES)
+  const [hydrated, setHydrated] = useState(false);
+  const [courses, setCourses] = useState<Course[]>(DEFAULT_COURSES);
+  const [exams, setExams] = useState<Exam[]>(DEFAULT_EXAMS);
+  const [history, setHistory] = useState<ExamResult[]>(INITIAL_HISTORY);
+  const [users, setUsers] = useState<Record<string, User>>(DEFAULT_USERS);
+  const [activeUser, setActiveUser] = useState<User>(
+    DEFAULT_USERS["demo@lg.com"] || Object.values(DEFAULT_USERS)[0]
   );
-  const [exams, setExams] = useState<Exam[]>(() =>
-    readStorage(STORAGE_KEYS.exams, DEFAULT_EXAMS)
-  );
-  const [history, setHistory] = useState<ExamResult[]>(() =>
-    readStorage(STORAGE_KEYS.history, INITIAL_HISTORY)
-  );
-  const [users, setUsers] = useState<Record<string, User>>(() =>
-    readStorage(STORAGE_KEYS.users, DEFAULT_USERS)
-  );
-  const [activeUser, setActiveUser] = useState<User>(() => {
-    const sessionEmail = readStorage<string | null>(STORAGE_KEYS.session, null);
-    if (sessionEmail && users[sessionEmail]) return users[sessionEmail];
-    return DEFAULT_USERS["demo@lg.com"] || Object.values(DEFAULT_USERS)[0];
-  });
-  const [activeAttempt, setActiveAttempt] = useState<ActiveAttempt | null>(() =>
-    readStorage(STORAGE_KEYS.attempt, null)
-  );
-  const [notice, setNotice] = useState<Notice>(() =>
-    readStorage(STORAGE_KEYS.notice, DEFAULT_NOTICE)
-  );
-  const [maintenance, setMaintenance] = useState<Maintenance>(() =>
-    readStorage(STORAGE_KEYS.maint, DEFAULT_MAINTENANCE)
-  );
+  const [activeAttempt, setActiveAttempt] = useState<ActiveAttempt | null>(null);
+  const [notice, setNotice] = useState<Notice>(DEFAULT_NOTICE);
+  const [maintenance, setMaintenance] = useState<Maintenance>(DEFAULT_MAINTENANCE);
   const [maintBypass, setMaintBypass] = useState(false);
-  const [darkMode, setDarkMode] = useState<boolean>(() =>
-    readStorage(STORAGE_KEYS.theme, false)
-  );
-  const [soundEnabled, setSoundEnabled] = useState<boolean>(() =>
-    readStorage(STORAGE_KEYS.sound, true)
-  );
-  const [streak, setStreak] = useState<Streak>(() =>
-    readStorage(STORAGE_KEYS.streak, { count: 3, lastDate: "2026-11-19" })
-  );
+  const [darkMode, setDarkMode] = useState<boolean>(true);
+  const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [streak, setStreak] = useState<Streak>({ count: 3, lastDate: "2026-11-19" });
 
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
 
-  // Sync state to LocalStorage
+  // Hydrate persisted state once on client mount to prevent SSR/client hydration mismatch
   useEffect(() => {
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      if (cancelled) return;
+      const storedUsers = readStorage(STORAGE_KEYS.users, DEFAULT_USERS);
+      const sessionEmail = readStorage<string | null>(STORAGE_KEYS.session, null);
+
+      setCourses(readStorage(STORAGE_KEYS.courses, DEFAULT_COURSES));
+      setExams(readStorage(STORAGE_KEYS.exams, DEFAULT_EXAMS));
+      setHistory(readStorage(STORAGE_KEYS.history, INITIAL_HISTORY));
+      setUsers(storedUsers);
+      if (sessionEmail && storedUsers[sessionEmail]) {
+        setActiveUser(storedUsers[sessionEmail]);
+      }
+      setActiveAttempt(readStorage(STORAGE_KEYS.attempt, null));
+      setNotice(readStorage(STORAGE_KEYS.notice, DEFAULT_NOTICE));
+      setMaintenance(readStorage(STORAGE_KEYS.maint, DEFAULT_MAINTENANCE));
+      setDarkMode(true);
+      setSoundEnabled(readStorage(STORAGE_KEYS.sound, true));
+      setStreak(readStorage(STORAGE_KEYS.streak, { count: 3, lastDate: "2026-11-19" }));
+      setHydrated(true);
+    }, 0);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, []);
+
+  // Sync state to LocalStorage after hydration
+  useEffect(() => {
+    if (!hydrated) return;
     try {
       localStorage.setItem(STORAGE_KEYS.courses, JSON.stringify(courses));
     } catch {}
-  }, [courses]);
+  }, [courses, hydrated]);
 
   useEffect(() => {
+    if (!hydrated) return;
     try {
       localStorage.setItem(STORAGE_KEYS.exams, JSON.stringify(exams));
     } catch {}
-  }, [exams]);
+  }, [exams, hydrated]);
 
   useEffect(() => {
+    if (!hydrated) return;
     try {
       localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(history));
     } catch {}
-  }, [history]);
+  }, [history, hydrated]);
 
   useEffect(() => {
+    if (!hydrated) return;
     try {
       localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(users));
     } catch {}
-  }, [users]);
+  }, [users, hydrated]);
 
   useEffect(() => {
+    if (!hydrated) return;
     try {
       localStorage.setItem(STORAGE_KEYS.session, JSON.stringify(activeUser.email));
     } catch {}
-  }, [activeUser]);
+  }, [activeUser, hydrated]);
 
   useEffect(() => {
+    if (!hydrated) return;
     try {
       localStorage.setItem(STORAGE_KEYS.notice, JSON.stringify(notice));
     } catch {}
-  }, [notice]);
+  }, [notice, hydrated]);
 
   useEffect(() => {
+    if (!hydrated) return;
     try {
       localStorage.setItem(STORAGE_KEYS.maint, JSON.stringify(maintenance));
     } catch {}
-  }, [maintenance]);
+  }, [maintenance, hydrated]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.theme, JSON.stringify(darkMode));
-    } catch {}
     if (typeof document !== "undefined") {
-      document.documentElement.classList.toggle("dark", darkMode);
+      document.documentElement.classList.add("dark");
     }
   }, [darkMode]);
 
   useEffect(() => {
+    if (!hydrated) return;
     try {
       localStorage.setItem(STORAGE_KEYS.sound, JSON.stringify(soundEnabled));
     } catch {}
-  }, [soundEnabled]);
+  }, [soundEnabled, hydrated]);
 
   useEffect(() => {
+    if (!hydrated) return;
     try {
       localStorage.setItem(STORAGE_KEYS.streak, JSON.stringify(streak));
     } catch {}
-  }, [streak]);
+  }, [streak, hydrated]);
 
   // Toast auto-dismiss
   useEffect(() => {
@@ -460,27 +482,14 @@ export const PortalProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     showToast("সকল ডেটা ডিফল্ট অবস্থায় রিসেট করা হয়েছে!");
   }, [showToast]);
 
-  const stats = useMemo(() => {
-    const total = history.length;
-    if (total === 0) return { total: 0, avg: 0, best: 0, mins: 0 };
-    return {
-      total,
-      avg: Math.round(history.reduce((s, r) => s + r.accuracy, 0) / total),
-      best: Math.max(...history.map((r) => r.accuracy)),
-      mins: Math.max(1, Math.round(history.reduce((s, r) => s + r.timeSpentSeconds, 0) / 60))
-    };
-  }, [history]);
+  const stats = useMemo(() => computePortalStats(history), [history]);
 
-  const bestScoreByExam = useMemo(() => {
-    const map = new Map<string, number>();
-    history.forEach((h) => {
-      const prev = map.get(h.examId);
-      if (prev === undefined || h.score > prev) {
-        map.set(h.examId, h.score);
-      }
-    });
-    return map;
-  }, [history]);
+  const bestScoreByExam = useMemo(() => getBestScoreByExam(history), [history]);
+
+  const latestResultByExam = useMemo(
+    () => getLatestResultIdByExam(history),
+    [history]
+  );
 
   const hasCompletedExam = useCallback(
     (examId: string) => history.some((h) => h.examId === examId),
@@ -490,6 +499,11 @@ export const PortalProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const getBestScore = useCallback(
     (examId: string) => bestScoreByExam.get(examId),
     [bestScoreByExam]
+  );
+
+  const getLatestResultId = useCallback(
+    (examId: string) => latestResultByExam.get(examId),
+    [latestResultByExam]
   );
 
   return (
@@ -531,8 +545,10 @@ export const PortalProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         resetAllData,
         stats,
         bestScoreByExam,
+        latestResultByExam,
         hasCompletedExam,
-        getBestScore
+        getBestScore,
+        getLatestResultId
       }}
     >
       {children}

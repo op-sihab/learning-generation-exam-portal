@@ -3,17 +3,12 @@
 import React, { useState, useRef } from "react";
 import {
   Upload,
-  FileText,
-  FileSpreadsheet,
-  FileCode,
-  Sparkles,
   AlertTriangle,
   CheckSquare,
   Square,
   Eye,
   EyeOff,
   Trash2,
-  Plus,
   Sigma,
   X,
   CheckCircle2,
@@ -42,6 +37,36 @@ export interface BulkImportModalProps {
   onClose: () => void;
 }
 
+function buildImportedExam(params: {
+  name: string;
+  courseId: string;
+  subject: string;
+  chapter: string;
+  questions: Question[];
+}): Exam {
+  const now = Date.now();
+  return {
+    id: `exam_${now}`,
+    name: params.name.trim() || "ইমপোর্ট করা মডেল টেস্ট",
+    courseId: params.courseId,
+    subject: params.subject || "পদার্থবিজ্ঞান",
+    chapter: params.chapter || "অধ্যায়ভিত্তিক",
+    type: "Model Test",
+    minutes: Math.max(5, Math.round(params.questions.length * 0.75)),
+    marks: 1,
+    negative: 0.25,
+    startTime: new Date(now).toISOString().slice(0, 16),
+    endTime: new Date(now + 30 * 864e5).toISOString().slice(0, 16),
+    retakeAllowed: true,
+    published: true,
+    instructions: [
+      `মোট প্রশ্ন: ${params.questions.length}টি।`,
+      "প্রতিটি সঠিক উত্তরের জন্য ১ নম্বর, ভুল উত্তরের জন্য ০.২৫ নম্বর কাটা যাবে।"
+    ],
+    questions: params.questions
+  };
+}
+
 export const BulkImportModal: React.FC<BulkImportModalProps> = ({
   open,
   courses,
@@ -68,10 +93,10 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
   const [targetExamId, setTargetExamId] = useState(exams[0]?.id || "");
   const [newExamName, setNewExamName] = useState("");
   const [newExamCourseId, setNewExamCourseId] = useState(courses[0]?.id || "frpb");
-  const [newExamSubject, setNewExamSubject] = useState(
+  const [newExamSubject] = useState(
     activeEditingExam?.subject || courses[0]?.subjects[0]?.name || "পদার্থবিজ্ঞান"
   );
-  const [newExamChapter, setNewExamChapter] = useState(activeEditingExam?.chapter || "");
+  const [newExamChapter] = useState(activeEditingExam?.chapter || "");
   const [formulaTarget, setFormulaTarget] = useState<{
     qIdx: number;
     field: "text" | "explanation" | "option";
@@ -195,26 +220,15 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
 
     if (onCreateNewExamWithQuestions) {
       const course = courses.find((c) => c.id === newExamCourseId) || courses[0];
-      onCreateNewExamWithQuestions({
-        id: "exam_" + Date.now(),
-        name: newExamName.trim() || "ইমপোর্ট করা মডেল টেস্ট",
-        courseId: course?.id || "frpb",
-        subject: newExamSubject || "পদার্থবিজ্ঞান",
-        chapter: newExamChapter || "অধ্যায়ভিত্তিক",
-        type: "Model Test",
-        minutes: Math.max(5, Math.round(selectedQuestions.length * 0.75)),
-        marks: 1,
-        negative: 0.25,
-        startTime: new Date().toISOString().slice(0, 16),
-        endTime: new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 16),
-        retakeAllowed: true,
-        published: true,
-        instructions: [
-          `মোট প্রশ্ন: ${selectedQuestions.length}টি।`,
-          "প্রতিটি সঠিক উত্তরের জন্য ১ নম্বর, ভুল উত্তরের জন্য ০.২৫ নম্বর কাটা যাবে।"
-        ],
-        questions: selectedQuestions
-      });
+      onCreateNewExamWithQuestions(
+        buildImportedExam({
+          name: newExamName,
+          courseId: course?.id || "frpb",
+          subject: newExamSubject,
+          chapter: newExamChapter,
+          questions: selectedQuestions
+        })
+      );
       onClose();
     }
   };
@@ -222,22 +236,22 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
   return (
     <>
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-xs p-3 sm:p-4"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-3 sm:p-4"
         role="dialog"
         aria-modal="true"
       >
-        <div className="w-full max-w-4xl max-h-[92vh] flex flex-col rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
+        <div className="w-full max-w-4xl max-h-[92vh] flex flex-col rounded-2xl bg-[#0C0F16] border border-white/[0.10] shadow-2xl overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.08]">
             <div className="flex items-center gap-2.5">
-              <span className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
+              <span className="p-2 rounded-lg bg-blue-500/15 border border-blue-500/25 text-blue-400">
                 <Upload className="w-5 h-5" />
               </span>
               <div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                <h3 className="text-base font-bold text-white">
                   বাল্ক প্রশ্নপত্র ও ডকুমেন্ট ইমপোর্ট
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-slate-400">
                   DOCX, CSV, TXT, JSON, HTML ফাইল বা টেক্সট পেস্ট করে প্রশ্ন যোগ করুন
                 </p>
               </div>
@@ -245,22 +259,23 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.06]"
+              aria-label="বন্ধ করুন"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Mode Switch Tabs */}
-          <div className="flex items-center justify-between px-6 py-2.5 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200/80 dark:border-slate-800">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between px-6 py-2.5 bg-[#111622] border-b border-white/[0.08]">
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
               <button
                 type="button"
                 onClick={() => setPasteMode(false)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap ${
                   !pasteMode
-                    ? "bg-blue-600 text-white shadow-xs"
-                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
+                    ? "bg-blue-600 text-white"
+                    : "text-slate-300 hover:bg-white/[0.06]"
                 }`}
               >
                 ফাইল আপলোড (DOCX / CSV / JSON / TXT)
@@ -268,10 +283,10 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
               <button
                 type="button"
                 onClick={() => setPasteMode(true)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap ${
                   pasteMode
-                    ? "bg-blue-600 text-white shadow-xs"
-                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
+                    ? "bg-blue-600 text-white"
+                    : "text-slate-300 hover:bg-white/[0.06]"
                 }`}
               >
                 সরাসরি টেক্সট পেস্ট
@@ -707,11 +722,11 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
           </div>
 
           {/* Footer Bar */}
-          <div className="flex items-center justify-between px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex items-center justify-between px-6 py-4 bg-slate-50 dark:bg-[#182234]/70 border-t border-slate-100 dark:border-slate-800">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               বাতিল
             </button>
@@ -721,7 +736,7 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
                 type="button"
                 disabled={selectedQuestions.length === 0}
                 onClick={handleConfirmImport}
-                className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-45 text-white text-xs font-bold transition-colors shadow-xs"
+                className="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-45 text-white text-xs font-semibold transition-colors"
               >
                 প্রিভিউ নিশ্চিত করে সংরক্ষণ করুন ({toBanglaNum(selectedQuestions.length)}টি প্রশ্ন)
               </button>
